@@ -6,15 +6,13 @@ import omdb
 # Create your models here.
 
 class Movie(models.Model):
-    title = models.TextField()
-    guid =  models.TextField()
-    type = models.TextField()
+    title = models.CharField(max_length=200)
+    guid =  models.CharField(max_length=200)
+    type = models.CharField(max_length=200)
     
 
-
 class Filter(models.Model):
-    type = models.TextField()
-
+    type = models.CharField(max_length=200)
 
 
 class Feed(models.Model):

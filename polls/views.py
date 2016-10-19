@@ -24,7 +24,7 @@ def movie_type(request):
             # process the data in form.cleaned_data as required
             print(form.cleaned_data)
             listFilters = list()
-            listFilters.append(form.cleaned_data.movie_type)
+            listFilters.append(form.cleaned_data['movie_type'])
             #need to fetch other values from database for the same user
             print(listFilters)
             # redirect to a new URL:
