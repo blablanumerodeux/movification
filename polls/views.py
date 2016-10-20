@@ -3,13 +3,17 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template import loader
 from .models import Feed
+from .models import Filter
 from .forms import NameForm
 import logging
 
 def feed(request):
     template = loader.get_template('index.html')
+    temp = Filter.objects.all()
+    print(temp)
     context = {
-        'listMovies': Feed.listMovies
+        'listMovies': Feed.listMovies,
+        'listTypesFiltered': temp
     }
     return HttpResponse(template.render(context, request))
 
@@ -24,8 +28,9 @@ def movie_type(request):
             # process the data in form.cleaned_data as required
             print(form.cleaned_data)
             listFilters = list()
-            listFilters.append(form.cleaned_data['movie_type'])
-            #need to fetch other values from database for the same user
+            f = Filter(type=form.cleaned_data['movie_type'])
+            listFilters.append(f)
+            f.save()
             print(listFilters)
             # redirect to a new URL:
             return HttpResponseRedirect('/polls/filter_added')
