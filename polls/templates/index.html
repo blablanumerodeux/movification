@@ -1,7 +1,8 @@
-{{ feedTitle }}
+Movies after filter : 
+
 
 <ul>
-{% for post in listMovies %}
+{% for post in listMovies%}
     <li>{{ post.title }} , {{ post.guid }} , {{ post.type}} </li>
 {% endfor %}
 </ul>
@@ -11,8 +12,8 @@ Filters :
 
 
 <ul>
-{% for filter in listTypesFiltered %}
-    <li>{{ filter.type}} </li>
+{% for filter in listTypesFiltered%}
+    <li>{{ filter}} </li>
 {% endfor %}
 </ul>
 

@@ -2,18 +2,38 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template import loader
-from .models import Feed
 from .models import Filter
+from .models import Movie
 from .forms import NameForm
+import feedparser
+import omdb
 import logging
 
 def feed(request):
     template = loader.get_template('index.html')
-    temp = Filter.objects.all()
-    print(temp)
+
+    typesFiltered = Filter.objects.values_list('type', flat=True)
+    print("list of the types filtered : ")
+    print(typesFiltered)
+
+    #we parse the imdb rss feed in order to have a list of DVD Release
+    #this is an example of source where we can find the info
+    d = feedparser.parse('http://rss.imdb.com/list/ls016522954/')
+    entries = d.entries
+    listMovies = list()
+    for post in entries:
+        guidFetched=post.guid.split('/')[-2]
+        #we fetch the type on omdb with the imdbid
+        typeFetched = omdb.imdbid(guidFetched).genre.replace(" ", "").split(',')
+        print("typeFetched = ")
+        print(typeFetched)
+        #if the type is not filtered then we keep it 
+        if not set(typeFetched) & set(typesFiltered): 
+            listMovies.append(Movie(title=post.title, guid=guidFetched,type = typeFetched))
+
     context = {
-        'listMovies': Feed.listMovies,
-        'listTypesFiltered': temp
+        'listMovies': listMovies,
+        'listTypesFiltered': typesFiltered 
     }
     return HttpResponse(template.render(context, request))
 
@@ -48,5 +68,6 @@ def filter_added(request):
         'listMovies': 'toto'
     }
     return HttpResponse(template.render(context, request))
+
 
 
